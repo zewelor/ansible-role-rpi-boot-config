@@ -2,7 +2,11 @@
 # tasks file for rpi-boot-config
 - name: "adjust /boot/config.txt based on boot_config"
   lineinfile:
-    line: '{{ item.key }}={{ item.value }}'
+    line: '{%- if item.value is not none -%}
+             {{ item.key }}={{ item.value }}
+           {%- else -%}
+             {{ item.key }}
+           {%- endif %}'
     dest: /boot/config.txt
     regexp: "^{{ item.key }}="
   with_dict: '{{ boot_config }}'
